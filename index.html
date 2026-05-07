@@ -120,7 +120,13 @@
     </style>
 </head>
 <body>
-
+<dialog id="nameDialog">
+  <form method="dialog">
+    <p>歡迎！請給自己取個名字：</p>
+    <input type="text" id="nameInput" placeholder="例如：王小明">
+    <button id="confirmBtn">確定</button>
+  </form>
+</dialog>
 <div id="chat-container">
     <div id="header">🤫 匿名聊天室</div>
     <div id="messages"></div>
@@ -154,10 +160,28 @@
     const messagesRef = ref(db, 'chats');
 
     // 隨機生成匿名名稱 (存在 localStorage 保持連貫性)
+    const dialog = document.getElementById('nameDialog');
+    const nameInput = document.getElementById('nameInput');
+    const confirmBtn = document.getElementById('confirmBtn');
+
     let myName = localStorage.getItem('anon_name');
+
     if (!myName) {
-        myName = "匿名_" + Math.floor(Math.random() * 10000);
-        localStorage.setItem('anon_name', myName);
+        // 顯示模態視窗
+        dialog.showModal();
+
+        confirmBtn.addEventListener('click', () => {
+            let inputName = nameInput.value.trim();
+            
+            if (inputName) {
+                myName = inputName;
+            } else {
+                myName = "匿名_" + Math.floor(Math.random() * 10000);
+            }
+            
+            localStorage.setItem('anon_name', myName);
+            console.log("已設定名稱：", myName);
+        });
     }
 
     // DOM 元素
